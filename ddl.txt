@@ -1,0 +1,134 @@
+create table Team(
+    Team_ID varchar(3) not null,
+    Team_Name varchar(20) not null ,
+    No_of_WC_played int,
+    No_of_WC_won int,
+    primary key (Team_ID)
+);
+
+create table Players(
+    Team_ID varchar(3) not null,
+    Player_Name varchar(20),
+    Jersey_No int not null,
+    Age int not null,
+    Player_Type varchar(10) not null,
+    Total_ODIs_played int,
+    Batting_Ranking int,
+    Total_Runs int,
+    Batting_Avg decimal(8,3),
+    Batting_SR decimal(8,3),
+    Highest_Score int,
+    No_of_100s int,
+    Bowling_Ranking int,
+    Total_Wickets int,
+    Bowling_Avg decimal(8,3),
+    Bowling_SR decimal(8,3),
+    Best_Bowling point,
+    Economy_Rate decimal(8,3),
+    No_of_5W int,
+    All_Rounder_Ranking int,
+    Captain_Or_Not bool,
+    VC_Or_Not bool,
+    primary key(Player_Name),
+    FOREIGN KEY (Team_ID) REFERENCES team(Team_ID)
+		ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+create table Venue(
+    Stadium_Name varchar(20),
+    City varchar(20) not null,
+    Capacity int,
+    No_Of_Matches_Played int,
+    No_Of_Matches_Allocated int,
+    primary key(Stadium_Name)
+);
+
+create table Matches(
+    Match_No int,
+    Match_Type varchar(15) not null,
+    Stadium_Name varchar(20) not null,
+    Date date,
+    Team_1 varchar(3) not null,
+    Team_2 varchar(3) not null,	
+    Team1_Toss_Result bool,
+    FOREIGN KEY (Stadium_Name) REFERENCES Venue(Stadium_Name)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (Team_1) REFERENCES team(team_ID)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (Team_2) REFERENCES team(team_ID)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+
+    primary key(Match_No)
+);
+
+create table playing_11(
+    match_no int,
+    player_name varchar(20),
+    FOREIGN KEY (match_no) REFERENCES matches(match_no)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (player_name) REFERENCES players(player_name)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+    primary key (match_no,player_name)
+);
+
+create table Support_Staff_Members(
+    Type varchar(20),
+    Team_ID varchar(3),
+    Name varchar(20) not null,
+    Age int not null,
+    Country varchar(20) not null,
+    Coach_Since int,
+    FOREIGN KEY (Team_ID) REFERENCES team(Team_ID)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+    primary key(Team_ID,Type)
+);
+
+create table Officials(
+    Name varchar(20),
+    Age int not null,
+    Country varchar(20) not null,
+    No_Of_Matches int,
+    primary key(Name)
+);
+
+create table Officials_In(
+    Match_No int,
+    Official_Name varchar(20),
+    Official_Type varchar(20) not null,
+    FOREIGN KEY (Match_No) REFERENCES Matches(Match_No)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (Official_Name) REFERENCES Officials(Name)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+    primary key (Match_No,Official_Name)
+);
+
+create table ball_by_ball_batting_Batting(
+    Inning int,
+    Match_No int,
+    Over_No int,
+    Ball_No int,
+    Ball_Event varchar(4) not null,
+    Runs int not null,
+    Player_Name varchar(20),
+    FOREIGN KEY (Match_No) REFERENCES Matches(Match_No)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (Player_Name) REFERENCES Players(Player_Name)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+    primary key(Match_No,Inning,Player_Name,Over_No,Ball_No)
+);
+
+create table ball_by_ball_batting_Bowling(
+    Inning int,
+    Match_No int,
+    Over_No int,
+    Player_Name varchar(20),
+    FOREIGN KEY (Match_No) REFERENCES Matches(Match_No)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (Player_Name) REFERENCES Players(Player_Name)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+    primary key(Match_No,Player_Name,Over_No,Inning)
+);
+
+
+
+
